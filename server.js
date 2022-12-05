@@ -17,7 +17,7 @@ const db = mysql.createConnection(
   },
   console.log(`Connected to the employee_db database.`)
 );
-
+hide(db);
 // db.query('SELECT * FROM students', function (err, results) {
 //   console.log(results);
 // });
