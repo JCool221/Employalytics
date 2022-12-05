@@ -1,6 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
-const hide = require('hide-secrets');
+
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -12,12 +12,12 @@ const db = mysql.createConnection(
   {
     host: 'localhost',
     user: 'root',
-    password: 'garbage data to test hide_secrets',
+    password: 'mousse-caesar-reactive',
     database: 'employee_db'
   },
   console.log(`Connected to the employee_db database.`)
 );
-hide(db);
+
 // db.query('SELECT * FROM students', function (err, results) {
 //   console.log(results);
 // });
