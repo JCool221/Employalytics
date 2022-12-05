@@ -1,16 +1,18 @@
 const inquirer = require('inquirer');
 
 const promptUser = () => {
+    console.log('==========Employee Manager============');
     return inquirer.prompt([
         {
             type: 'list',
-            message: 'Hello',
-            name: 'greeting',
-            choices: ['world']
+            message: 'What would you like to do?',
+            name: 'startup',
+            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 
+            'View All Roles', 'Add Role', 'View All Departments', 'Add Department'],
         },
     ])
     .then((response) => {
-        console.log(`Hello ${greeting}!`)
+        console.log(response.startup);
     });
 }
 

@@ -15,7 +15,7 @@ const db = mysql.createConnection(
         password: 'mousse-caesar-reactive',
         database: 'employee_db'
     },   
-        console.log(`Connected to the employee_db database.`)
+        // console.log(`Connected to the employee_db database.`)
 );
 
 // db.query('SELECT * FROM department', function (err, results) {
