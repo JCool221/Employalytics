@@ -1,16 +1,18 @@
+// requirements
 const express = require('express');
 const mysql = require("mysql2");
-// const promptUser = require('./interface');
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 
-
+// create express app
 const PORT = process.env.PORT || 3001;
 const app = express();
 
+// necessary middleware
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
+// connect to database
 const db = mysql.createConnection(
     {
       host: 'localhost',
@@ -21,12 +23,7 @@ const db = mysql.createConnection(
     console.log(`Connected to the employee_db database.`)
   );
 
-// db.query('SELECT * FROM department', function (err, results) {
-//     console.log(results);
-//   });
-
-
-
+// startup prompt
 const promptUser = () => {
     console.log('==========Employee Manager============');
     return inquirer.prompt([
@@ -42,7 +39,9 @@ const promptUser = () => {
         console.log(response.startup);
         switch (response.startup) {
             case 'View All Employees':
-                console.log('check them out');
+                db.query('SELECT * FROM employee', function (err, results) {
+                    console.table([], results);
+                  });
                 promptUser();
             break;
             case 'Add Employee':
@@ -54,7 +53,9 @@ const promptUser = () => {
                 promptUser();
             break;
             case 'View All Roles':
-                console.log('all of the roles!');
+                db.query('SELECT * FROM role', function (err, results) {
+                    console.table([], results);
+                  });
                 promptUser();
             break;
             case 'Add Role':
@@ -63,9 +64,8 @@ const promptUser = () => {
             break;
             case 'View All Departments':
                 db.query('SELECT * FROM department', function (err, results) {
-                    console.table(results);
+                    console.table([], results);
                   });
-                // console.log("this is actually implemented but i'm not going to do it right now");
                 promptUser();
             break;
             case 'Add Department':
