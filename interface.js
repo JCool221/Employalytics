@@ -1,14 +1,27 @@
 const inquirer = require('inquirer');
 
-const promptUser = () => {
-    console.log('==========Employee Manager============');
+const addEmployee = () => {
+    console.log('==========Add A New Employee==========');
     return inquirer.prompt([
         {
-            type: 'list',
-            message: 'What would you like to do?',
-            name: 'startup',
-            choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 
-            'View All Roles', 'Add Role', 'View All Departments', 'Add Department', 'Quit'],
+            type: 'Input',
+            message: "What is the employee's first name?",
+            name: 'first_name',
+        },
+        {
+            type: 'Input',
+            message: "What is the employee's last name?",
+            name: 'last_name',
+        },
+        {
+            type: 'Input',
+            message: "What is the employee's role?",
+            name: 'role',
+        },
+        {
+            type: 'Input',
+            message: "What is the employee's manager?",
+            name: 'manager',
         },
     ])
     .then((response) => {
@@ -35,7 +48,10 @@ const promptUser = () => {
                 promptUser();
             break;
             case 'View All Departments':
-                console.log("this is actually implemented but i'm not going to do it right now");
+                db.query('SELECT * FROM department', function (err, results) {
+                    console.log(results);
+                  });
+                // console.log("this is actually implemented but i'm not going to do it right now");
                 promptUser();
             break;
             case 'Add Department':
