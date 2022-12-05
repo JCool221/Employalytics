@@ -1,5 +1,6 @@
 const express = require('express');
 const mysql = require('mysql2');
+const promptUser = require('./modules/interface');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
@@ -17,9 +18,10 @@ const db = mysql.createConnection(
         console.log(`Connected to the employee_db database.`)
 );
 
-db.query('SELECT * FROM department', function (err, results) {
-  console.log(results);
-});
+// db.query('SELECT * FROM department', function (err, results) {
+//   console.log(results);
+// });
+promptUser()
 
 app.use((req, res) => {
   res.status(404).end();
