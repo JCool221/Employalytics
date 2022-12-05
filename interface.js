@@ -1,4 +1,5 @@
 const inquirer = require('inquirer');
+const { viewDepartment } = require('./server');
 
 const promptUser = () => {
     console.log('==========Employee Manager============');
@@ -35,7 +36,10 @@ const promptUser = () => {
                 promptUser();
             break;
             case 'View All Departments':
-                console.log("this is actually implemented but i'm not going to do it right now");
+                db.query('SELECT * FROM department', function (err, results) {
+                    console.log(results);
+                  });
+                // console.log("this is actually implemented but i'm not going to do it right now");
                 promptUser();
             break;
             case 'Add Department':
