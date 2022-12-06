@@ -3,6 +3,8 @@ const express = require('express');
 const mysql = require("mysql2");
 const inquirer = require('inquirer');
 const cTable = require('console.table');
+require('dotenv').config();
+const { addEmployee, addRole, addDepartment } = require('./interface');
 
 // create express app
 const PORT = process.env.PORT || 3001;
@@ -15,10 +17,10 @@ app.use(express.json());
 // connect to database
 const db = mysql.createConnection(
     {
-      host: 'localhost',
-      user: 'root',
-      password: 'mousse-caesar-reactive',
-      database: 'employee_db'
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME
     },
     console.log(`Connected to the employee_db database.`)
   );
@@ -45,9 +47,9 @@ const promptUser = () => {
                 promptUser();
             break;
             case 'Add Employee':
-                console.log('Try that later');
-                promptUser();
-            break;
+              addEmployee();
+
+              break;
             case 'Update Employee Role':
                 console.log("that's not implemented yet either");
                 promptUser();
@@ -59,8 +61,7 @@ const promptUser = () => {
                 promptUser();
             break;
             case 'Add Role':
-                console.log("nope still not implemented");
-                promptUser();
+                  addRole();
             break;
             case 'View All Departments':
                 db.query('SELECT * FROM department', function (err, results) {
@@ -69,8 +70,9 @@ const promptUser = () => {
                 promptUser();
             break;
             case 'Add Department':
-                console.log("this however is not implemented");
-                promptUser();
+                  addDepartment();
+                // console.log("this however is not implemented");
+                // promptUser();
             break;
             case 'Quit':
                 console.log("Goodbye!");
