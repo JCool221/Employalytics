@@ -1,4 +1,6 @@
 const inquirer = require('inquirer');
+const Employee = require('./lib/newEmployee');
+const Role = require('./lib/newRole');
 
 const addEmployee = () => {
     console.log('==========Add A New Employee==========');
@@ -6,12 +8,12 @@ const addEmployee = () => {
         {
             type: 'Input',
             message: "What is the employee's first name?",
-            name: 'first_name',
+            name: 'firstName',
         },
         {
             type: 'Input',
             message: "What is the employee's last name?",
-            name: 'last_name',
+            name: 'lastName',
         },
         {
             type: 'Input',
@@ -25,45 +27,55 @@ const addEmployee = () => {
         },
     ])
     .then((response) => {
-        console.log(response.startup);
-        switch (response.startup) {
-            case 'View All Employees':
-                console.log('check them out');
-                promptUser();
-            break;
-            case 'Add Employee':
-                console.log('Try that later');
-                promptUser();
-            break;
-            case 'Update Employee Role':
-                console.log("that's not implemented yet either");
-                promptUser();
-            break;
-            case 'View All Roles':
-                console.log('all of the roles!');
-                promptUser();
-            break;
-            case 'Add Role':
-                console.log("nope still not implemented");
-                promptUser();
-            break;
-            case 'View All Departments':
-                db.query('SELECT * FROM department', function (err, results) {
-                    console.log(results);
-                  });
-                // console.log("this is actually implemented but i'm not going to do it right now");
-                promptUser();
-            break;
-            case 'Add Department':
-                console.log("this however is not implemented");
-                promptUser();
-            break;
-            case 'Quit':
-                console.log("Goodbye!");
-                process.exit(0);
-        }
+         
+        // console.log(response);
+        const newHire = new Employee(response.firstName, response.lastName, response.role, response.manager)
+        newHire.printInfo();
     });
 }
 
+const addRole = () => {
+    console.log('==============Add a New Role===========');
+    return inquirer.prompt([
+        {
+            type: 'input',
+            message: "What is the new role's title?",
+            name: 'title',
+        },
+        {
+            type: 'input',
+            message: "What is the new Role's salary?",
+            name: 'salary',
+        },
+        {
+            type: 'input',
+            message: "Which department does the new role belong to?",
+            name: 'department',
+        }
+    ])
+    .then((response) => {
+        const newRole = new Role(response.title, response.salary, response.department);
+        newRole.printinfo();
+    })
+}
 
-    module.exports = promptUser
+const addDepartment = () => {
+    console.log('===============Add a New Department===============');
+    return inquirer.prompt([
+        {
+            type: 'input',
+            message: 'What is the new Department?',
+            name: 'department',
+        },
+    ])
+    .then((response) => {
+        const newDept = response.department;
+        console.log(newDept);
+    })
+}
+
+module.exports = {
+    addEmployee,
+    addRole,
+    addDepartment,
+};
