@@ -105,17 +105,21 @@ const addRole = () => {
       }
   ])
   .then((response) => {
-      const newRole = new Role(response.title, response.salary, response.department);
-      db.query(`SELECT id FROM department WHERE name LIKE ?`, newRole.department, (err, result) => {
-        let depId = result[0].id;
-          console.log(depId);
-          db.query(`INSERT INTO role (title, salary, department) VALUES (?)`, newRole.title, newRole.salary, depId, (err, result) => {
+    db.query(`SELECT id FROM department WHERE name LIKE ?`, response.department, (err, result) => {
+      const newRole = new Role(response.title, response.salary, result[0].id);
+        // let depId = result[0].id;
+          console.log(newRole);
+        // })
+        // .then (([newRole, depId]) => {
+        //   console.log(newRole);
+        //   console.log(depId);
+          db.query(`INSERT INTO role (title, salary, department_id) VALUES (?)`, newRole, (err, result) => {
             if (err) {
               console.log(err);
             }
             console.log(result);
           })
-        });
+          })
       })
 }
 
