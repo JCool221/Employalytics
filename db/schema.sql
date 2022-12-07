@@ -27,3 +27,9 @@ CREATE TABLE employee (
     FOREIGN KEY(role_id)
     REFERENCES role(id)
 );
+
+ALTER TABLE employee 
+    ADD CONSTRAINT sr_fk_emp_man 
+    FOREIGN KEY(manager_id) 
+    REFERENCES employee(id)
+;
