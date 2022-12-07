@@ -1,6 +1,5 @@
 const inquirer = require('inquirer');
 const Employee = require('./lib/newEmployee');
-const Role = require('./lib/newRole');
 
 const addEmployee = () => {
     console.log('==========Add A New Employee==========');
@@ -55,8 +54,16 @@ const addRole = () => {
     ])
     .then((response) => {
         const newRole = new Role(response.title, response.salary, response.department);
-        newRole.printinfo();
-    })
+        db.query('SELECT * FROM department WHERE name = ?', newRole, (err, result) => {
+            console.log(result);
+        })
+        // db.query(`INSERT INTO role (title, salary, department) VALUES (?)`, newRole, (err, result) => {
+        //     if (err) {
+        //       console.log(err);
+        //     }
+        //     console.log(result);
+        //   });
+        })
 }
 
 const addDepartment = () => {

@@ -4,7 +4,9 @@ const mysql = require("mysql2");
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 require('dotenv').config();
-const { addEmployee, addRole } = require('./interface');
+const Role = require('./lib/newRole');
+
+// const { addEmployee, addRole } = require('./interface');
 
 // create express app
 const PORT = process.env.PORT || 3001;
@@ -47,7 +49,7 @@ const promptUser = () => {
                 promptUser();
             break;
             case 'Add Employee':
-              addEmployee();
+              // addEmployee();
 
               break;
             case 'Update Employee Role':
@@ -82,6 +84,41 @@ const promptUser = () => {
 function test(newDept) {
   console.log(newDept);
 };
+
+const addRole = () => {
+  console.log('==============Add a New Role===========');
+  return inquirer.prompt([
+      {
+          type: 'input',
+          message: "What is the new role's title?",
+          name: 'title',
+      },
+      {
+          type: 'input',
+          message: "What is the new Role's salary?",
+          name: 'salary',
+      },
+      {
+          type: 'input',
+          message: "Which department does the new role belong to?",
+          name: 'department',
+      }
+  ])
+  .then((response) => {
+      const newRole = new Role(response.title, response.salary, response.department);
+      db.query(`SELECT id FROM department WHERE name LIKE ?`, newRole.department, (err, result) => {
+        let depId = result[0].id;
+          console.log(depId);
+          db.query(`INSERT INTO role (title, salary, department) VALUES (?)`, newRole.title, newRole.salary, depId, (err, result) => {
+            if (err) {
+              console.log(err);
+            }
+            console.log(result);
+          })
+        });
+      })
+}
+
 
 const addDepartment = () => {
   console.log('===============Add a New Department===============');
