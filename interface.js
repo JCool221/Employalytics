@@ -70,12 +70,12 @@ const addDepartment = () => {
     ])
     .then((response) => {
         const newDept = response.department;
-        console.log(newDept);
+        test(newDept);
     })
 }
 
 module.exports = {
     addEmployee,
     addRole,
-    addDepartment,
+    // addDepartment,
 };

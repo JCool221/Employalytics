@@ -4,7 +4,7 @@ const mysql = require("mysql2");
 const inquirer = require('inquirer');
 const cTable = require('console.table');
 require('dotenv').config();
-const { addEmployee, addRole, addDepartment } = require('./interface');
+const { addEmployee, addRole } = require('./interface');
 
 // create express app
 const PORT = process.env.PORT || 3001;
@@ -71,18 +71,40 @@ const promptUser = () => {
             break;
             case 'Add Department':
                   addDepartment();
-                // console.log("this however is not implemented");
-                // promptUser();
             break;
             case 'Quit':
                 console.log("Goodbye!");
                 process.exit(0);
+              }        
+            });    
+          }    
+          
+function test(newDept) {
+  console.log(newDept);
+};
+
+const addDepartment = () => {
+  console.log('===============Add a New Department===============');
+  return inquirer.prompt([
+      {
+          type: 'input',
+          message: 'What is the new Department?',
+          name: 'department',
+      },    
+  ])    
+  .then((response) => {
+      const newDept = response.department;
+      // create a db query to add department to the department table
+      db.query(`INSERT INTO department (name) VALUES (?)`, newDept, (err, result) => {
+        if (err) {
+          console.log(err);
         }
-    });
-}
+        console.log(result);
+      });
+  })    
+}  
 
 promptUser();
-
 app.use((req, res) => {
   res.status(404).end();
 });
