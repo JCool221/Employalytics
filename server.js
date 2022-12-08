@@ -6,6 +6,7 @@ const cTable = require('console.table');
 require('dotenv').config();
 const Role = require('./lib/newRole');
 const Employee = require('./lib/newEmployee');
+const e = require('express');
 
 
 // const { addEmployee, addRole } = require('./interface');
@@ -52,12 +53,10 @@ const promptUser = () => {
             break;
             case 'Add Employee':
               addEmployee();
-
               break;
             case 'Update Employee Role':
-                console.log("that's not implemented yet either");
-                promptUser();
-            break;
+              updateRole();
+              break;
             case 'View All Roles':
                 db.query('SELECT r.id, r.title, r.salary, d.name FROM role AS r JOIN department AS d ON r.department_id = d.id', function (err, results) {
                     console.table([], results);
@@ -80,12 +79,9 @@ const promptUser = () => {
                 console.log("Goodbye!");
                 process.exit(0);
               }        
-            });    
-          }    
+    });    
+}    
           
-function test(newDept) {
-  console.log(newDept);
-};
 
 const addEmployee = () => {
   console.log('==========Add A New Employee==========');
@@ -123,11 +119,10 @@ const addEmployee = () => {
           if (err) {
               console.log(err);
             }
-            console.log(result);
-          })
-  
+            console.log(`Success! Updated Employee database.`);
+            keepGoing();         
+              })
       })
-       // console.log(response);
     }
   );
 })};
@@ -155,21 +150,50 @@ const addRole = () => {
   .then((response) => {
     db.query(`SELECT id FROM department WHERE name LIKE ?`, response.department, (err, result) => {
       const newRole = new Role(response.title, response.salary, result[0].id);
-
         // inject into db
-        
         db.query(`INSERT INTO role (title, salary, department_id) VALUES ( ? , ? , ? )`, [newRole.title, newRole.salary, newRole.department_id], (err, result) => {
-
         if (err) {
             console.log(err);
           }
-          console.log(result);
-        })
+          console.log(`Success! Updated Employee database.`);
+          keepGoing();         
+          })
       })
   })
 }
 
+const updateRole = () => {
+  console.log('========Update Employee Role==========');
+  return inquirer.prompt([
+      {
+          type: "input",
+          message: "What is the employee's name?",
+          name: "employeeName",
+      },
+      {
+        type: "input",
+        message: "What is the new Role?",
+        name: "role",
+      },
+  ]) .then((answer) => {
+      let empName = answer.employeeName.split(" ");
+      db.query(`SELECT id FROM employee WHERE first_name LIKE ? AND last_name LIKE ?`, [empName[0], empName[1]], (err, result) => {
+        let empID = result[0].id;
+        db.query(`SELECT id FROM role WHERE title LIKE ?`, answer.role, (err, res) => {
+          let newRole = res[0].id;
+            db.query(`UPDATE employee SET role_id = ? where id = ?`, [newRole, empID], (err, result) => {
+              if (err) {
+                console.log(err);
+              }
+              console.log(result);
+              keepGoing();
+            })
+        })
+    }) 
+  })
+};
 
+// AND last_name LIKE ?
 const addDepartment = () => {
   console.log('===============Add a New Department===============');
   return inquirer.prompt([
@@ -186,12 +210,19 @@ const addDepartment = () => {
         if (err) {
           console.log(err);
         }
-        console.log(result);
+        console.log(`Success! Updated Employee database.`);
+        keepGoing();         
       });
+
   })    
 }  
 
+function keepGoing() {
+  setTimeout(promptUser, 1000)
+}
+
 promptUser();
+
 app.use((req, res) => {
   res.status(404).end();
 });
