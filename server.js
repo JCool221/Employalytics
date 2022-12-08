@@ -5,6 +5,8 @@ const inquirer = require('inquirer');
 const cTable = require('console.table');
 require('dotenv').config();
 const Role = require('./lib/newRole');
+const Employee = require('./lib/newEmployee');
+
 
 // const { addEmployee, addRole } = require('./interface');
 
@@ -49,7 +51,7 @@ const promptUser = () => {
                 promptUser();
             break;
             case 'Add Employee':
-              // addEmployee();
+              addEmployee();
 
               break;
             case 'Update Employee Role':
@@ -85,6 +87,52 @@ function test(newDept) {
   console.log(newDept);
 };
 
+const addEmployee = () => {
+  console.log('==========Add A New Employee==========');
+  return inquirer.prompt([
+      {
+          type: 'Input',
+          message: "What is the employee's first name?",
+          name: 'firstName',
+      },
+      {
+          type: 'Input',
+          message: "What is the employee's last name?",
+          name: 'lastName',
+      },
+      {
+          type: 'Input',
+          message: "What is the employee's role?",
+          name: 'role',
+      },
+      {
+          type: 'Input',
+          message: "What is the employee's manager?",
+          name: 'manager',
+      },
+  ])
+  .then((response) => {
+    db.query(`SELECT id FROM role WHERE title LIKE ?`, response.role, (err, roleData) => {
+      let manager=response.manager.split(' ');
+      console.log(roleData[0].id, manager[1], manager[0]);
+      db.query(`SELECT id FROM employee WHERE first_name LIKE ? AND last_name LIKE ?`, [manager[0], manager[1]], (err, result) => {
+        const newHire = new Employee(response.firstName, response.lastName, roleData[0].id, result[0].id)
+        newHire.printInfo();
+        db.query(`INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ( ? , ? , ? , ? )`, [newHire.first_name, newHire.last_name, newHire.role_id, newHire.manager_id], (err, result) => {
+
+          if (err) {
+              console.log(err);
+            }
+            console.log(result);
+          })
+  
+      })
+       // console.log(response);
+    }
+  );
+})};
+
+
 const addRole = () => {
   console.log('==============Add a New Role===========');
   return inquirer.prompt([
@@ -107,22 +155,18 @@ const addRole = () => {
   .then((response) => {
     db.query(`SELECT id FROM department WHERE name LIKE ?`, response.department, (err, result) => {
       const newRole = new Role(response.title, response.salary, result[0].id);
-        // let depId = result[0].id;
-          // console.log(typeof (newRole.salary));
 
-          // inject into db
-          
-          // db.query(`INSERT INTO role (title, salary, department_id) VALUES ( "??" , ?? , ?? )`, [newRole.title, 40000, newRole.department_id], (err, result) => {
-            db.query(`INSERT INTO role (title, salary, department_id) VALUES ("${newRole.title}", ${newRole.salary}, ${newRole.department_id})`, (err, result) => {
- 
-          if (err) {
-              console.log(err);
-            }
-            console.log(result);
-          })
+        // inject into db
+        
+        db.query(`INSERT INTO role (title, salary, department_id) VALUES ( ? , ? , ? )`, [newRole.title, newRole.salary, newRole.department_id], (err, result) => {
 
-          })
+        if (err) {
+            console.log(err);
+          }
+          console.log(result);
+        })
       })
+  })
 }
 
 
