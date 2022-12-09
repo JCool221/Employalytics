@@ -20,7 +20,9 @@ The schema and sample seeds are available in the repo. Use the standard npm inst
 <a name="Usage"></a>
 ## Usage
 
-[video](https://drive.google.com/file/d/1RjNVnZOy3KdMPiWkmlu9gvtEtj3EUcBS/view)
+[video demoing usage](https://drive.google.com/file/d/1RjNVnZOy3KdMPiWkmlu9gvtEtj3EUcBS/view)
+
+
 Type npm start into the command line to start and then make your selection and follow the prompts.  Entering the department of a new role or the manager of a new employee only requires similar spelling and is not case sensitive.
 
 <a name="Contributing"></a>
